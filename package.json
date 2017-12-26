@@ -1,0 +1,26 @@
+{
+  "name": "dodgeordie",
+  "version": "1.0.0",
+  "description": "This exercise should be a funny way of preparing for our semester exam. It will bring together most of the topics we covered in the first semester. Work on it seriously and you can be sure that you will master the upcoming exam.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rstropek-teaching/real-time-game-quiz-4ahif-SimonPrimetzhofer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rstropek-teaching/real-time-game-quiz-4ahif-SimonPrimetzhofer/issues"
+  },
+  "homepage": "https://github.com/rstropek-teaching/real-time-game-quiz-4ahif-SimonPrimetzhofer#readme",
+  "devDependencies": {
+    "@types/ws": "^3.2.1",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "ws": "^3.3.3"
+  }
+}
