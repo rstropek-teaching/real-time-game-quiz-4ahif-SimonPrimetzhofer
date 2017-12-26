@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/rstropek-teaching/real-time-game-quiz-4ahif-SimonPrimetzhofer#readme",
   "devDependencies": {
-    "@types/ws": "^3.2.1",
-    "typescript": "^2.6.2"
+    "@types/express": "^4.11.0",
+    "typescript": "^2.6.2",
+    "@types/socket.io": "^1.4.31"
   },
   "dependencies": {
-    "ws": "^3.3.3"
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
   }
 }
