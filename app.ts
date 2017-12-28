@@ -1,23 +1,49 @@
 declare const io:SocketIOStatic;
 
-let players: string[] = [];
-
 const socket=io();
-socket.on("connection",(username)=>{
-    //A player only can login if there aren't already 2 players
-    if(players.length<2){
-        const username=prompt("Enter your username");
-        if(username!=null){
-            players.push(username);
-            alert("Hello "+username+"!");
-            openWindow("./gamefield.html");
-        }else openWindow("./index.html");
-            
-    }else{
-        alert("Two players are already registered!");
-    }
+
+//let id:number=0;
+
+//Game logic
+
+function paintFields(){
+    const idString=<string>localStorage.getItem("id");
+    const id=parseInt(idString);
+    socket.emit("role",id);
+    socket.on("playerRole", (playerID:number,role:string) => {
+        console.log(role);
+        if(playerID===id){
+            let fields=document.getElementsByClassName(role);
+            for(let i=0;i<fields.length;i++){
+                fields[i].className="w3-light-grey";
+            }
+        }
+    });
+}
+
+
+// Connection handling
+function userHandling(){
+    const username=prompt("Enter your username");
+    if(username!=null)
+        socket.emit("usernameEntered",username);
+}
+
+socket.on("redirect", (url:string,playerID:number) =>{
+    localStorage.setItem("id",playerID.toString());
+    alert("Press enter to get redirected to the gamefield...");
+    window.open(url,"_self");
+    
 });
 
-function openWindow(url:string){
-    window.open(url,"_self");
-}
+socket.on("denied", (message:string) =>{
+    alert(message);
+    window.close();
+    process.exit(1);
+});
+
+socket.on("bye",() => {
+    alert("Thanks for playing, hope to see you again soon!");
+    socket.close();
+    process.exit(1);
+});

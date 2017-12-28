@@ -7,9 +7,9 @@
         <link rel="stylesheet" href="./w3.css">
         
         <style>
-            field{
+            /*field{
                 
-            }
+            }*/
             table{
                 margin: 0px auto;
             }
@@ -23,7 +23,7 @@
 
     </head>
 
-    <body>
+    <body onload="paintFields();">
         
         <div class="w3-margin w3-padding-64">
             
@@ -31,17 +31,17 @@
 
                 <tr>
     
-                    <td onclick="placeFigure();" class="w3-dark-grey"><div id="field"/></td>
-                    <td class="w3-dark-grey"><div id="field"/></td>
-                    <td class="w3-dark-grey"><div id="field"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill1"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill2"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill3"/></td>
     
                 </tr>
     
                 <tr>
     
-                    <td class="w3-light-grey"><div id="field"/></td>
-                    <td class="w3-light-grey"><div id="field"/></td>
-                    <td class="w3-light-grey"><div id="field"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge1"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge2"/></td>
+                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge3"/></td>
     
                 </tr>
     
@@ -52,3 +52,6 @@
     </body>
 
 </html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/app.js"></script>
