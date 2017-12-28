@@ -4,11 +4,19 @@ const socket = io();
 //Game logic
 function paintFields() {
     const idString = localStorage.getItem("id");
-    const id = parseInt(idString);
+    //Create a number from a string with unary operator +
+    const id = +idString;
+    //Get role of current player
     socket.emit("role", id);
-    socket.on("playerRole", (playerID, role) => {
-        console.log(role);
+    //Server responds with role
+    socket.on("playerRole", (playerID, role, username) => {
         if (playerID === id) {
+            const nameElement = document.getElementById("username");
+            if (nameElement)
+                nameElement.innerHTML = username;
+            const roleElement = document.getElementById("role");
+            if (roleElement)
+                roleElement.innerHTML = role;
             let fields = document.getElementsByClassName(role);
             for (let i = 0; i < fields.length; i++) {
                 fields[i].className = "w3-light-grey";
