@@ -8,13 +8,16 @@ function commitPosition() {
         if (fields[i].innerHTML.length > 0)
             socket.emit("position" + playerRole, fields[i].id.charAt(fields[i].id.length - 1));
     }
+    console.log(`win${playerRole}`);
 }
 //Decision if won or lost
 socket.on(`win${playerRole}`, () => {
+    console.log("Gewonnen!");
     alert("You won! Congratulations!");
     paintFields();
 });
 socket.on(`lose${playerRole}`, () => {
+    console.log("Verloren!");
     alert("You lost! May the force be with you.");
     paintFields();
 });
@@ -92,8 +95,9 @@ socket.on("denied", (message) => {
     window.close();
     process.exit(1);
 });
-socket.on("bye", () => {
-    alert("Thanks for playing, hope to see you again soon!");
-    socket.close();
-    process.exit(1);
+socket.on("bye", (redirectUrl) => {
+    alert("Thanks for playing, hope to see you again soon! You will now see the scores of all games played so far.");
+    window.open(redirectUrl, "_self");
 });
+function showScores() {
+}

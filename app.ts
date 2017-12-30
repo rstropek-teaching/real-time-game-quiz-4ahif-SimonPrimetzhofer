@@ -1,4 +1,3 @@
-import * as nedb from "nedb";
 declare const io:SocketIOStatic;
 
 const socket=io();
@@ -17,10 +16,12 @@ function commitPosition(){
 
 //Decision if won or lost
 socket.on(`win${playerRole}`,()=>{
+    console.log("Gewonnen!");
     alert("You won! Congratulations!");
     paintFields();
 });
 socket.on(`lose${playerRole}`,() => {
+    console.log("Verloren!");
     alert("You lost! May the force be with you.");
     paintFields();
 });
@@ -106,11 +107,10 @@ socket.on("denied", (message:string) =>{
 });
 
 socket.on("bye",(redirectUrl:string) => {
-    alert("Thanks for playing, hope to see you again soon!<br/>You will now see the scores of all games played so far.");
-    socket.close();
-    window.open("./scores.html","_self");
+    alert("Thanks for playing, hope to see you again soon! You will now see the scores of all games played so far.");
+    window.open(redirectUrl,"_self");
 });
 
 function showScores(){
-    
+
 }
