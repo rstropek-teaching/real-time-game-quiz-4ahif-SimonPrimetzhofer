@@ -1,3 +1,4 @@
+import * as nedb from "nedb";
 declare const io:SocketIOStatic;
 
 const socket=io();
@@ -104,8 +105,12 @@ socket.on("denied", (message:string) =>{
     process.exit(1);
 });
 
-socket.on("bye",() => {
-    alert("Thanks for playing, hope to see you again soon!");
+socket.on("bye",(redirectUrl:string) => {
+    alert("Thanks for playing, hope to see you again soon!<br/>You will now see the scores of all games played so far.");
     socket.close();
-    process.exit(1);
+    window.open("./scores.html","_self");
 });
+
+function showScores(){
+    
+}

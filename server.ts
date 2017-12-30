@@ -61,12 +61,18 @@ sio(server).on('connection', socket => {
         players[indexKiller].setScore(players[indexKiller].getScore()+2);
         posKiller="";
         posDodger="";
+        if(players[indexKiller].getScore()===15)
+          socket.emit("bye","scores.html");
+        else if(players[indexKiller].getScore()>15)
+          players[indexKiller].setScore(players[indexKiller].getScore()-5);
         socket.emit("winKiller");
         socket.emit("loseDodger");
       }else if(posKiller!==posDodger){
         players[indexDodger].setScore(players[indexDodger].getScore()+1);
         posKiller="";
         posDodger="";
+        if(players[indexDodger].getScore()===15)
+          socket.emit("bye","scores.html");
         players[indexDodger].setRole("Killer");
         players[indexKiller].setRole("Dodger");
         socket.emit("winDodger");

@@ -33,17 +33,14 @@ sio(server).on('connection', socket => {
         socket.emit("playerRole", playerID, players[playerID].getRole(), players[playerID].getUsername(), players[playerID].getScore());
     });
     socket.on("positionKiller", (position) => {
-        console.log("posKiller " + position);
         posKiller = position;
         scoreEvaluation();
     });
     socket.on("positionDodger", (position) => {
-        console.log("posDodger " + position);
         posDodger = position;
         scoreEvaluation();
     });
     function scoreEvaluation() {
-        console.log("Hallo i bin do  herin");
         let indexKiller = -1;
         let indexDodger = -1;
         //Only if both position are set
@@ -60,6 +57,10 @@ sio(server).on('connection', socket => {
                 players[indexKiller].setScore(players[indexKiller].getScore() + 2);
                 posKiller = "";
                 posDodger = "";
+                if (players[indexKiller].getScore() === 15)
+                    socket.emit("bye");
+                else if (players[indexKiller].getScore() > 15)
+                    players[indexKiller].setScore(players[indexKiller].getScore() - 5);
                 socket.emit("winKiller");
                 socket.emit("loseDodger");
             }
@@ -67,6 +68,8 @@ sio(server).on('connection', socket => {
                 players[indexDodger].setScore(players[indexDodger].getScore() + 1);
                 posKiller = "";
                 posDodger = "";
+                if (players[indexDodger].getScore() === 15)
+                    socket.emit("bye");
                 players[indexDodger].setRole("Killer");
                 players[indexKiller].setRole("Dodger");
                 socket.emit("winDodger");
