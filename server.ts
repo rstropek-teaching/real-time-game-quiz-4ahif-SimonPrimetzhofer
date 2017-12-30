@@ -4,6 +4,8 @@ import * as sio from 'socket.io'
 import { Player } from './player.js';
 
 let players: Player[] = [];
+let posKiller:string="";
+let posDodger:string="";
 
 const app = express();
 app.use(express.static(__dirname));
@@ -30,6 +32,46 @@ sio(server).on('connection', socket => {
 
   socket.on("role", id => {
     const playerID=<number>id;
-    socket.emit("playerRole",playerID,players[id].getRole(),players[id].getUsername());
+    socket.emit("playerRole",playerID,players[playerID].getRole(),players[playerID].getUsername(),players[playerID].getScore());
   });
+
+  socket.on("positionKiller",(position:string) => {
+    posKiller=position;
+    scoreEvaluation();
+  });
+  socket.on("positionDodger",(position:string) => {
+    posDodger=position;
+    scoreEvaluation();
+  });
+
+  function scoreEvaluation() {
+    let indexKiller=-1;
+    let indexDodger=-1;
+    //Only if both position are set
+    if(posKiller!==""&&posDodger!==""){
+      //Getting the index of the killer and the dodger
+      for(let i=0;i<players.length;i++){
+        if(players[i].getRole()==="Dodger")
+          indexDodger=i;
+        if(players[i].getRole()==="Killer")
+          indexKiller=i;
+      }
+      //Checking the position
+      if(posKiller===posDodger){
+        players[indexKiller].setScore(players[indexKiller].getScore()+2);
+        posKiller="";
+        posDodger="";
+        socket.emit("winKiller");
+        socket.emit("loseDodger");
+      }else if(posKiller!==posDodger){
+        players[indexDodger].setScore(players[indexDodger].getScore()+1);
+        posKiller="";
+        posDodger="";
+        players[indexDodger].setRole("Killer");
+        players[indexKiller].setRole("Dodger");
+        socket.emit("winDodger");
+        socket.emit("loseKiller");
+      }
+    }
+  }
 });

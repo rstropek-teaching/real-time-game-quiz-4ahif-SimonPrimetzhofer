@@ -30,27 +30,34 @@
             <center>
                 <h1 id="username"></h1>
                 <h3 id="role"></h3>
+                <h3 id="score"></h3>
             </center>
 
             <table class="w3-table">
                 
                 <tr>
     
-                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill1"/></td>
-                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill2"/></td>
-                    <td onclick="placeFigure();" class="w3-dark-grey Killer" ><div id="kill3"/></td>
+                    <td onclick="placeFigure('kill1');" class="w3-dark-grey Killer" id="kill1"></td>
+                    <td onclick="placeFigure('kill2');" class="w3-dark-grey Killer" id="kill2"></td>
+                    <td onclick="placeFigure('kill3');" class="w3-dark-grey Killer" id="kill3"></td>
     
                 </tr>
     
                 <tr>
     
-                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge1"/></td>
-                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge2"/></td>
-                    <td onclick="placeFigure();" class="w3-dark-grey Dodger" ><div id="dodge3"/></td>
+                    <td onclick="placeFigure('dodge1');" class="w3-dark-grey Dodger" id="dodge1"></td>
+                    <td onclick="placeFigure('dodge2');" class="w3-dark-grey Dodger" id="dodge2"></td>
+                    <td onclick="placeFigure('dodge3');" class="w3-dark-grey Dodger" id="dodge3"></td>
     
                 </tr>
     
             </table>
+
+            <center>
+                <br/>
+                <button class="w3-btn w3-dark-grey" onclick="commitPosition();">Ready</button>
+
+            </center>
 
         </div>
         
