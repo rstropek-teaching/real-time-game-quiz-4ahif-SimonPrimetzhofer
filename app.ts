@@ -32,12 +32,12 @@ socket.on("lose",(role:string) => {
 
 //Painting the fields in the correct color
 function paintFields(){
-    //const idString=<string>localStorage.getItem("id");
     //Create a number from a string with unary operator +
-    //const id=+idString;
     const id=getIdFromStorage();
+
     //Get role of current player
     socket.emit("role",id);
+
     //Server responds with role
     socket.on("playerRole", (playerID:number,role:string,username:string,score:number) => {
         playerRole=role;
@@ -121,5 +121,5 @@ socket.on("bye",(redirectUrl:string) => {
 });
 
 function showScores(){
-
+    //jo
 }

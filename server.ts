@@ -44,20 +44,24 @@ sio(server).on('connection', socket => {
     } else socket.emit("denied", "There are already two players playing at the moment. Come back later!");//There are already two players
   });
 
+  //Role of a player requested
   socket.on("role", id => {
     const playerID=<number>id;
     socket.emit("playerRole",playerID,players[playerID].getRole(),players[playerID].getUsername(),players[playerID].getScore());
   });
 
+  //Killer sets position
   socket.on("positionKiller",(position:string) => {
     posKiller=position;
     scoreEvaluation();
   });
+  //Dodger sets position
   socket.on("positionDodger",(position:string) => {
     posDodger=position;
     scoreEvaluation();
   });
 
+  //Evaluate score
   function scoreEvaluation() {
     //Indizes with dummy values
     let indexKiller=-1;
@@ -71,7 +75,7 @@ sio(server).on('connection', socket => {
         if(players[i].getRole()===KILLER)
           indexKiller=i;
       }
-      //Checking the position
+      //Killer hits Dodger
       if(posKiller===posDodger){
 
         //Killer gets two points
@@ -82,10 +86,10 @@ sio(server).on('connection', socket => {
         
         //If Killer reached the max-points
         if(players[indexKiller].getScore()===MAX_POINTS){
-          socket.broadcast.emit("win",KILLER);
-          socket.broadcast.emit("lose",DODGER);
+          sio(server).emit("win",KILLER);
+          sio(server).emit("lose",DODGER);
           //End the game
-          socket.broadcast.emit("bye","./scores.html");
+          sio(server).emit("bye","./scores.html");
         }
 
         //If Killer reached more than max-points, he gets -5 points
@@ -94,34 +98,37 @@ sio(server).on('connection', socket => {
 
         //If the Killer won the current round and no specific event occurs, he gets a message and the loser (dodger) too  
         else {
-          socket.broadcast.emit("win",KILLER);
-          socket.broadcast.emit("lose",DODGER);
+          sio(server).emit("win",KILLER);
+          sio(server).emit("lose",DODGER);
         }  
-
+      //Killer missed Dodger
       }else if(posKiller!==posDodger){
         changeScore(indexDodger,1);
         resetPositions();
         if(players[indexDodger].getScore()===MAX_POINTS){
-          socket.broadcast.emit("win",DODGER);
-          socket.broadcast.emit("lose",KILLER)
-          socket.broadcast.emit("bye","./scores.html");
+          sio(server).emit("win",DODGER);
+          sio(server).emit("lose",KILLER)
+          sio(server).emit("bye","./scores.html");
         }else{
           players[indexDodger].setRole(KILLER);
           players[indexKiller].setRole(DODGER);
-          socket.broadcast.emit("win",DODGER);
-          socket.broadcast.emit("lose",KILLER);
+          sio(server).emit("win",DODGER);
+          sio(server).emit("lose",KILLER);
         }
       }
     }
   }
+  //Add or subtract points
   function changeScore(playerIndex:number,score:number){
     if(players[playerIndex])
       players[playerIndex].setScore(players[playerIndex].getScore()+score);
   }
+  //Set positions to ""
   function resetPositions(){
     posKiller="";
     posDodger="";
   }
+  //Remove a player
   socket.on("removePlayer",(id:number) => {
     delete players[id];
   });
