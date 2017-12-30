@@ -15,15 +15,17 @@ function commitPosition(){
 }
 
 //Decision if won or lost
-socket.on(`win${playerRole}`,()=>{
-    console.log("Gewonnen!");
-    alert("You won! Congratulations!");
-    paintFields();
+socket.on("win",(role:string)=>{
+    if(playerRole===role){
+        alert("You won this round! Congratulations!");
+        paintFields();
+    }
 });
-socket.on(`lose${playerRole}`,() => {
-    console.log("Verloren!");
-    alert("You lost! May the force be with you.");
-    paintFields();
+socket.on("lose",(role:string) => {
+    if(playerRole===role){
+        alert("You lost this round! Do better in the next round.");
+        paintFields();
+    }
 });
 
 //Painting the fields in the correct color

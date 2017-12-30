@@ -8,18 +8,19 @@ function commitPosition() {
         if (fields[i].innerHTML.length > 0)
             socket.emit("position" + playerRole, fields[i].id.charAt(fields[i].id.length - 1));
     }
-    console.log(`win${playerRole}`);
 }
 //Decision if won or lost
-socket.on(`win${playerRole}`, () => {
-    console.log("Gewonnen!");
-    alert("You won! Congratulations!");
-    paintFields();
+socket.on("win", (role) => {
+    if (playerRole === role) {
+        alert("You won this round! Congratulations!");
+        paintFields();
+    }
 });
-socket.on(`lose${playerRole}`, () => {
-    console.log("Verloren!");
-    alert("You lost! May the force be with you.");
-    paintFields();
+socket.on("lose", (role) => {
+    if (playerRole === role) {
+        alert("You lost this round! Do better in the next round.");
+        paintFields();
+    }
 });
 //Painting the fields in the correct color
 function paintFields() {

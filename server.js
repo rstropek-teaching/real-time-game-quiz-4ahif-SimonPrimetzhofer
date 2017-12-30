@@ -66,32 +66,36 @@ sio(server).on('connection', socket => {
             }
             //Checking the position
             if (posKiller === posDodger) {
+                //Killer gets two points
                 changeScore(indexKiller, 2);
+                //Reset the positions to ""
                 resetPositions();
+                //If Killer reached the max-points
                 if (players[indexKiller].getScore() === MAX_POINTS) {
-                    socket.emit("winKiller");
-                    socket.emit("loseDodger");
                     resetAll();
-                    socket.emit("bye", "scores.html");
+                    //End the game
+                    sio(server).emit("bye", "./scores.html");
                 }
                 else if (players[indexKiller].getScore() > MAX_POINTS)
                     changeScore(indexKiller, -5);
-                socket.emit("winKiller");
-                socket.emit("loseDodger");
+                else {
+                    sio(server).emit("win", KILLER);
+                    sio(server).emit("lose", DODGER);
+                }
             }
             else if (posKiller !== posDodger) {
                 changeScore(indexDodger, 1);
                 resetPositions();
                 if (players[indexDodger].getScore() === MAX_POINTS) {
-                    socket.emit("winDodger");
-                    socket.emit("loseDodger");
                     resetAll();
-                    socket.emit("bye", "scores.html");
+                    sio(server).emit("bye", "./scores.html");
                 }
-                players[indexDodger].setRole(KILLER);
-                players[indexKiller].setRole(DODGER);
-                socket.emit("winDodger");
-                socket.emit("loseKiller");
+                else {
+                    players[indexDodger].setRole(KILLER);
+                    players[indexKiller].setRole(DODGER);
+                    sio(server).emit("win", DODGER);
+                    sio(server).emit("lose", KILLER);
+                }
             }
         }
     }

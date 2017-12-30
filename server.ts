@@ -79,11 +79,9 @@ sio(server).on('connection', socket => {
         
         //If Killer reached the max-points
         if(players[indexKiller].getScore()===MAX_POINTS){
-          socket.emit("winKiller");
-          socket.emit("loseDodger");
           resetAll();
           //End the game
-          socket.emit("bye","./scores.html");
+          sio(server).emit("bye","./scores.html");
         }
 
         //If Killer reached more than max-points, he gets -5 points
@@ -92,29 +90,28 @@ sio(server).on('connection', socket => {
 
         //If the Killer won the current round and no specific event occurs, he gets a message and the loser (dodger) too  
         else {
-          socket.emit("winKiller");
-          socket.emit("loseDodger");
+          sio(server).emit("win",KILLER);
+          sio(server).emit("lose",DODGER);
         }  
 
       }else if(posKiller!==posDodger){
         changeScore(indexDodger,1);
         resetPositions();
         if(players[indexDodger].getScore()===MAX_POINTS){
-          socket.emit("winDodger");
-          socket.emit("loseKiller");
           resetAll();
-          socket.emit("bye","./scores.html");
+          sio(server).emit("bye","./scores.html");
         }else{
           players[indexDodger].setRole(KILLER);
           players[indexKiller].setRole(DODGER);
-          socket.emit("winDodger");
-          socket.emit("loseKiller");
+          sio(server).emit("win",DODGER);
+          sio(server).emit("lose",KILLER);
         }
       }
     }
   }
   function changeScore(playerIndex:number,score:number){
-    players[playerIndex].setScore(players[playerIndex].getScore()+score);
+    if(players[playerIndex])
+      players[playerIndex].setScore(players[playerIndex].getScore()+score);
   }
   function resetPositions(){
     posKiller="";
