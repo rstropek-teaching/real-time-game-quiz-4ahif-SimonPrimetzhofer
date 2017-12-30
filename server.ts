@@ -9,10 +9,13 @@ const MAX_POINTS=2;
 const DODGER="Dodger";
 const KILLER="Killer";
 const MAX_PLAYER=2;
+
 //Create or load database
 const db=new Datastore({filename:__dirname+"/db.dat",autoload:true});
+
 //Array of players
 let players: Player[] = [];
+
 //Positions of players
 let posKiller:string="";
 let posDodger:string="";
@@ -79,9 +82,10 @@ sio(server).on('connection', socket => {
         
         //If Killer reached the max-points
         if(players[indexKiller].getScore()===MAX_POINTS){
-          resetAll();
+          socket.broadcast.emit("win",KILLER);
+          socket.broadcast.emit("lose",DODGER);
           //End the game
-          sio(server).emit("bye","./scores.html");
+          socket.broadcast.emit("bye","./scores.html");
         }
 
         //If Killer reached more than max-points, he gets -5 points
@@ -90,21 +94,22 @@ sio(server).on('connection', socket => {
 
         //If the Killer won the current round and no specific event occurs, he gets a message and the loser (dodger) too  
         else {
-          sio(server).emit("win",KILLER);
-          sio(server).emit("lose",DODGER);
+          socket.broadcast.emit("win",KILLER);
+          socket.broadcast.emit("lose",DODGER);
         }  
 
       }else if(posKiller!==posDodger){
         changeScore(indexDodger,1);
         resetPositions();
         if(players[indexDodger].getScore()===MAX_POINTS){
-          resetAll();
-          sio(server).emit("bye","./scores.html");
+          socket.broadcast.emit("win",DODGER);
+          socket.broadcast.emit("lose",KILLER)
+          socket.broadcast.emit("bye","./scores.html");
         }else{
           players[indexDodger].setRole(KILLER);
           players[indexKiller].setRole(DODGER);
-          sio(server).emit("win",DODGER);
-          sio(server).emit("lose",KILLER);
+          socket.broadcast.emit("win",DODGER);
+          socket.broadcast.emit("lose",KILLER);
         }
       }
     }
@@ -117,8 +122,7 @@ sio(server).on('connection', socket => {
     posKiller="";
     posDodger="";
   }
-  function resetAll(){
-    players.pop();
-    players.pop();
-  }
+  socket.on("removePlayer",(id:number) => {
+    delete players[id];
+  });
 });

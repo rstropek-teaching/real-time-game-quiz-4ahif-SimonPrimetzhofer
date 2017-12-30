@@ -72,42 +72,44 @@ sio(server).on('connection', socket => {
                 resetPositions();
                 //If Killer reached the max-points
                 if (players[indexKiller].getScore() === MAX_POINTS) {
-                    resetAll();
+                    socket.broadcast.emit("win", KILLER);
+                    socket.broadcast.emit("lose", DODGER);
                     //End the game
-                    sio(server).emit("bye", "./scores.html");
+                    socket.broadcast.emit("bye", "./scores.html");
                 }
                 else if (players[indexKiller].getScore() > MAX_POINTS)
                     changeScore(indexKiller, -5);
                 else {
-                    sio(server).emit("win", KILLER);
-                    sio(server).emit("lose", DODGER);
+                    socket.broadcast.emit("win", KILLER);
+                    socket.broadcast.emit("lose", DODGER);
                 }
             }
             else if (posKiller !== posDodger) {
                 changeScore(indexDodger, 1);
                 resetPositions();
                 if (players[indexDodger].getScore() === MAX_POINTS) {
-                    resetAll();
-                    sio(server).emit("bye", "./scores.html");
+                    socket.broadcast.emit("win", DODGER);
+                    socket.broadcast.emit("lose", KILLER);
+                    socket.broadcast.emit("bye", "./scores.html");
                 }
                 else {
                     players[indexDodger].setRole(KILLER);
                     players[indexKiller].setRole(DODGER);
-                    sio(server).emit("win", DODGER);
-                    sio(server).emit("lose", KILLER);
+                    socket.broadcast.emit("win", DODGER);
+                    socket.broadcast.emit("lose", KILLER);
                 }
             }
         }
     }
     function changeScore(playerIndex, score) {
-        players[playerIndex].setScore(players[playerIndex].getScore() + score);
+        if (players[playerIndex])
+            players[playerIndex].setScore(players[playerIndex].getScore() + score);
     }
     function resetPositions() {
         posKiller = "";
         posDodger = "";
     }
-    function resetAll() {
-        players.pop();
-        players.pop();
-    }
+    socket.on("removePlayer", (id) => {
+        delete players[id];
+    });
 });

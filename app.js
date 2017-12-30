@@ -13,12 +13,14 @@ function commitPosition() {
 socket.on("win", (role) => {
     if (playerRole === role) {
         alert("You won this round! Congratulations!");
+        removeFigure();
         paintFields();
     }
 });
 socket.on("lose", (role) => {
     if (playerRole === role) {
         alert("You lost this round! Do better in the next round.");
+        removeFigure();
         paintFields();
     }
 });
@@ -62,10 +64,7 @@ function paintFields() {
 //Placing the figure
 function placeFigure(fieldID) {
     //If a player clicks another field, the figure gets removed from the old field
-    const fields = document.getElementsByClassName(playerRole);
-    for (let i = 0; i < fields.length; i++) {
-        fields[i].innerHTML = "";
-    }
+    removeFigure();
     //Place the figure inside of the clicked field
     let clickedField = document.getElementById(fieldID);
     if (clickedField && clickedField.classList.contains("w3-light-grey")) {
@@ -73,6 +72,12 @@ function placeFigure(fieldID) {
     }
     else
         alert("You are not allowed to place your figure here! Watch out for a field colored in light grey");
+}
+function removeFigure() {
+    const fields = document.getElementsByClassName(playerRole);
+    for (let i = 0; i < fields.length; i++) {
+        fields[i].innerHTML = "";
+    }
 }
 function getIdFromStorage() {
     const idString = localStorage.getItem("id");
@@ -97,6 +102,7 @@ socket.on("denied", (message) => {
     process.exit(1);
 });
 socket.on("bye", (redirectUrl) => {
+    socket.emit("removePlayer", getIdFromStorage());
     alert("Thanks for playing, hope to see you again soon! You will now see the scores of all games played so far.");
     window.open(redirectUrl, "_self");
 });

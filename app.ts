@@ -18,12 +18,14 @@ function commitPosition(){
 socket.on("win",(role:string)=>{
     if(playerRole===role){
         alert("You won this round! Congratulations!");
+        removeFigure();
         paintFields();
     }
 });
 socket.on("lose",(role:string) => {
     if(playerRole===role){
         alert("You lost this round! Do better in the next round.");
+        removeFigure();
         paintFields();
     }
 });
@@ -69,15 +71,19 @@ function paintFields(){
 //Placing the figure
 function placeFigure(fieldID:string){
     //If a player clicks another field, the figure gets removed from the old field
-    const fields=document.getElementsByClassName(playerRole);
-    for(let i=0;i<fields.length;i++){
-        fields[i].innerHTML="";
-    }
+    removeFigure();
     //Place the figure inside of the clicked field
     let clickedField=document.getElementById(fieldID);
     if(clickedField&&clickedField.classList.contains("w3-light-grey")){
         clickedField.innerHTML=`<img src='${playerRole}.png' alt='${playerRole}' width='100%' height='100%'/>`;
     }else alert("You are not allowed to place your figure here! Watch out for a field colored in light grey");
+}
+
+function removeFigure(){
+    const fields=document.getElementsByClassName(playerRole);
+    for(let i=0;i<fields.length;i++){
+        fields[i].innerHTML="";
+    }
 }
 
 function getIdFromStorage() :number {
@@ -109,6 +115,7 @@ socket.on("denied", (message:string) =>{
 });
 
 socket.on("bye",(redirectUrl:string) => {
+    socket.emit("removePlayer",getIdFromStorage());
     alert("Thanks for playing, hope to see you again soon! You will now see the scores of all games played so far.");
     window.open(redirectUrl,"_self");
 });
