@@ -91,6 +91,7 @@ serverSocket.on('connection', socket => {
           serverSocket.emit("win",KILLER);
           serverSocket.emit("lose",DODGER);
           //End the game
+          insertNewScore();
           serverSocket.emit("bye","./scores.html");
         }
 
@@ -110,6 +111,7 @@ serverSocket.on('connection', socket => {
         if(players[indexDodger].getScore()===MAX_POINTS){
           serverSocket.emit("win",DODGER);
           serverSocket.emit("lose",KILLER)
+          insertNewScore();
           serverSocket.emit("bye","./scores.html");
         }else{
           players[indexDodger].setRole(KILLER);
@@ -134,4 +136,17 @@ serverSocket.on('connection', socket => {
   socket.on("removePlayer",(id:number) => {
     delete players[id];
   });
+
+  //Database operations
+  function insertNewScore(){
+    let today=new Date();
+    db.insert(
+      {date:today.toLocaleDateString(),player1:players[0].getUsername(),player2:players[1].getUsername(),score:Math.abs(players[0].getScore()-players[1].getScore())},
+    );
+  }
+
+  socket.on("scores",() => {
+    socket.emit("allScores",db.getAllData());
+  });
+
 });

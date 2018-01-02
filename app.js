@@ -105,11 +105,26 @@ socket.on("bye", (redirectUrl) => {
     window.open(redirectUrl, "_self");
 });
 function showScores() {
-    //jo
+    socket.emit("scores");
 }
-function disconnect() {
-    socket.emit("removePlayer", getIdFromStorage());
-    alert("You closed the window, bye!");
-    socket.close();
-    process.exit(-1);
-}
+socket.on("allScores", (data) => {
+    let scoresTable = document.getElementById("scoresTable");
+    if (scoresTable) {
+        let scoreBody = scoresTable.getElementsByTagName("tbody")[0];
+        for (const dataElement of data) {
+            let row = scoreBody.insertRow(scoreBody.rows.length);
+            let element = row.insertCell(0);
+            const date = document.createTextNode(`${dataElement.date}`);
+            element.appendChild(date);
+            element = row.insertCell(1);
+            const player1 = document.createTextNode(`${dataElement.player1}`);
+            element.appendChild(player1);
+            element = row.insertCell(2);
+            const player2 = document.createTextNode(`${dataElement.player2}`);
+            element.appendChild(player2);
+            element = row.insertCell(3);
+            const difference = document.createTextNode(`${dataElement.score}`);
+            element.appendChild(difference);
+        }
+    }
+});
