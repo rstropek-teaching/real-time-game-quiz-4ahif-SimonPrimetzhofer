@@ -25,7 +25,9 @@ app.use(express.static(__dirname));
 const server = http.createServer(app);
 server.listen(3000);
 
-sio(server).on('connection', socket => {
+const serverSocket=sio(server);
+
+serverSocket.on('connection', socket => {
 
   //Connection Handling
   socket.on('usernameEntered', username => {
@@ -86,10 +88,10 @@ sio(server).on('connection', socket => {
         
         //If Killer reached the max-points
         if(players[indexKiller].getScore()===MAX_POINTS){
-          sio(server).emit("win",KILLER);
-          sio(server).emit("lose",DODGER);
+          serverSocket.emit("win",KILLER);
+          serverSocket.emit("lose",DODGER);
           //End the game
-          sio(server).emit("bye","./scores.html");
+          serverSocket.emit("bye","./scores.html");
         }
 
         //If Killer reached more than max-points, he gets -5 points
@@ -98,22 +100,22 @@ sio(server).on('connection', socket => {
 
         //If the Killer won the current round and no specific event occurs, he gets a message and the loser (dodger) too  
         else {
-          sio(server).emit("win",KILLER);
-          sio(server).emit("lose",DODGER);
+          serverSocket.emit("win",KILLER);
+          serverSocket.emit("lose",DODGER);
         }  
       //Killer missed Dodger
       }else if(posKiller!==posDodger){
         changeScore(indexDodger,1);
         resetPositions();
         if(players[indexDodger].getScore()===MAX_POINTS){
-          sio(server).emit("win",DODGER);
-          sio(server).emit("lose",KILLER)
-          sio(server).emit("bye","./scores.html");
+          serverSocket.emit("win",DODGER);
+          serverSocket.emit("lose",KILLER)
+          serverSocket.emit("bye","./scores.html");
         }else{
           players[indexDodger].setRole(KILLER);
           players[indexKiller].setRole(DODGER);
-          sio(server).emit("win",DODGER);
-          sio(server).emit("lose",KILLER);
+          serverSocket.emit("win",DODGER);
+          serverSocket.emit("lose",KILLER);
         }
       }
     }

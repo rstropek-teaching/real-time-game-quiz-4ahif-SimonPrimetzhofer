@@ -21,7 +21,8 @@ const app = express();
 app.use(express.static(__dirname));
 const server = http.createServer(app);
 server.listen(3000);
-sio(server).on('connection', socket => {
+const serverSocket = sio(server);
+serverSocket.on('connection', socket => {
     //Connection Handling
     socket.on('usernameEntered', username => {
         if (players.length < MAX_PLAYER) {
@@ -76,16 +77,16 @@ sio(server).on('connection', socket => {
                 resetPositions();
                 //If Killer reached the max-points
                 if (players[indexKiller].getScore() === MAX_POINTS) {
-                    sio(server).emit("win", KILLER);
-                    sio(server).emit("lose", DODGER);
+                    serverSocket.emit("win", KILLER);
+                    serverSocket.emit("lose", DODGER);
                     //End the game
-                    sio(server).emit("bye", "./scores.html");
+                    serverSocket.emit("bye", "./scores.html");
                 }
                 else if (players[indexKiller].getScore() > MAX_POINTS)
                     changeScore(indexKiller, -5);
                 else {
-                    sio(server).emit("win", KILLER);
-                    sio(server).emit("lose", DODGER);
+                    serverSocket.emit("win", KILLER);
+                    serverSocket.emit("lose", DODGER);
                 }
                 //Killer missed Dodger
             }
@@ -93,15 +94,15 @@ sio(server).on('connection', socket => {
                 changeScore(indexDodger, 1);
                 resetPositions();
                 if (players[indexDodger].getScore() === MAX_POINTS) {
-                    sio(server).emit("win", DODGER);
-                    sio(server).emit("lose", KILLER);
-                    sio(server).emit("bye", "./scores.html");
+                    serverSocket.emit("win", DODGER);
+                    serverSocket.emit("lose", KILLER);
+                    serverSocket.emit("bye", "./scores.html");
                 }
                 else {
                     players[indexDodger].setRole(KILLER);
                     players[indexKiller].setRole(DODGER);
-                    sio(server).emit("win", DODGER);
-                    sio(server).emit("lose", KILLER);
+                    serverSocket.emit("win", DODGER);
+                    serverSocket.emit("lose", KILLER);
                 }
             }
         }

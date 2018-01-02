@@ -107,3 +107,9 @@ socket.on("bye", (redirectUrl) => {
 function showScores() {
     //jo
 }
+function disconnect() {
+    socket.emit("removePlayer", getIdFromStorage());
+    alert("You closed the window, bye!");
+    socket.close();
+    process.exit(-1);
+}
