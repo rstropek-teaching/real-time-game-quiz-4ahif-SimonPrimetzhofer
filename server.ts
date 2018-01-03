@@ -5,7 +5,7 @@ import { Player } from './player.js';
 import * as Datastore from "nedb";
 
 //Constants
-const MAX_POINTS=2;
+const MAX_POINTS=15;
 const DODGER="Dodger";
 const KILLER="Killer";
 const MAX_PLAYER=2;
